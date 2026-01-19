@@ -9,6 +9,7 @@ class DatabaseConnection {
     this.isConnected = false;
     mongoose.set("strictQuery", true);
 
+    // Event listeners for mongoose connection events
     mongoose.connection.on("connected", () => {
       console.log("MongoDB connected Successfully");
       this.isConnected = true;
@@ -35,12 +36,12 @@ class DatabaseConnection {
       }
 
       const connectionOptions = {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        maxPoolSize: 10,
-        serverSelectionTimeoutMS: 5000,
-        socketTimeoutMS: 4500,
-        family: 4,
+        useNewUrlParser: true, // Uses new MongoDB connection string parser
+        useUnifiedTopology: true, // Uses new connection management engine
+        maxPoolSize: 10, // Maximum 10 simultaneous connections
+        serverSelectionTimeoutMS: 5000, // Wait 5 seconds to find MongoDB server
+        socketTimeoutMS: 4500, // Close inactive connections after 4.5 seconds
+        family: 4, // Use IPv4
       };
 
       if (process.env.NODE_ENV === "development") {
@@ -61,7 +62,7 @@ class DatabaseConnection {
       console.log(
         `Retrying the connection, Attempt ${this.retryCount} / ${MAX_RETRIES}`,
       );
-      await new Promise((resolve) => setTimeout({ resolve }, MAX_RETRIES));
+      await new Promise((resolve) => setTimeout(resolve, RETRY_INTERVAL));
 
       return this.connect();
     } else {
@@ -103,8 +104,7 @@ class DatabaseConnection {
 }
 
 // create singleton object
-
 const dbConnection = new DatabaseConnection();
 
-export default dbConnection.connection.bind(dbConnection);
+export default dbConnection.connect.bind(dbConnection);
 export const getDbStatus = dbConnection.getConnectionStatus.bind(dbConnection);
