@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const lectureProgressSchema = mongoose.Schema({
+const lectureProgressSchema = new mongoose.Schema({
   lecture: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Lecture",
