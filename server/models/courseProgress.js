@@ -39,8 +39,8 @@ const courseProgressSchema = mongoose.Schema(
     completionPercentage: {
       type: Number,
       default: 0,
-      minValue: 0,
-      maxValue: 100,
+      min: 0,
+      max: 100,
     },
     lectureProgress: [lectureProgressSchema],
     lastAccessed: {
