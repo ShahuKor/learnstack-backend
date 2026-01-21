@@ -78,7 +78,7 @@ coursePurchaseSchema.virtual("isRefundable").get(function () {
 coursePurchaseSchema.methods.processRefund = async function (reason, amount) {
   this.refundReason = reason;
   this.status = "refunded";
-  this.refundedAmount = amount || this.amount;
+  this.refundedAmount = amount || this.refundedAmount;
   return this.save();
 };
 
