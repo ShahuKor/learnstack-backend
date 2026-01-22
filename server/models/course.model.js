@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
 const courseSchema = new mongoose.Schema(
   {
@@ -25,10 +25,10 @@ const courseSchema = new mongoose.Schema(
     level: {
       type: String,
       enum: {
-        values: ["begineer", "intermediate", "advance"],
+        values: ["beginner", "intermediate", "advanced"],
         message: "Please select a valid level",
       },
-      default: "begineer",
+      default: "beginneer",
     },
     price: {
       type: Number,
@@ -38,7 +38,6 @@ const courseSchema = new mongoose.Schema(
     thumbnail: {
       type: String,
       required: [true, "Course thumbnail is required"],
-      default: "defaultthumbnail.png",
     },
     enrolledStudents: [
       {
@@ -77,7 +76,7 @@ const courseSchema = new mongoose.Schema(
   },
 );
 
-courseSchema.vitual("averageRating").get(function () {
+courseSchema.virtual("averageRating").get(function () {
   return 0; // TODO
 });
 

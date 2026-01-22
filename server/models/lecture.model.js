@@ -22,7 +22,7 @@ const lectureSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    publidId: {
+    publicId: {
       type: String,
       required: [true, "Video Public ID is required"],
     },

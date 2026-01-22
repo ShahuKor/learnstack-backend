@@ -20,7 +20,7 @@ const lectureProgressSchema = new mongoose.Schema({
   },
 });
 
-const courseProgressSchema = mongoose.Schema(
+const courseProgressSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -56,7 +56,7 @@ const courseProgressSchema = mongoose.Schema(
 );
 
 // Update Last Access
-courseProgressSchema.methods.updateLastAcessed = function () {
+courseProgressSchema.methods.updateLastAccessed = function () {
   this.lastAccessed = Date.now();
   return this.save({ validateBeforeSave: false });
 };
