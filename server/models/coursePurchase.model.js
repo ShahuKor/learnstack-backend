@@ -35,7 +35,7 @@ const coursePurchaseSchema = new mongoose.Schema(
       type: String,
       required: [true, "Payment method is required"],
     },
-    paymendId: {
+    paymentId: {
       type: String,
       required: [true, "Payment ID is a required field"],
     },
@@ -69,7 +69,7 @@ coursePurchaseSchema.virtual("isRefundable").get(function () {
   if (this.status !== "completed") {
     return false;
   }
-  const thirtyDayAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
   return this.createdAt > thirtyDayAgo;
 });
 
@@ -78,7 +78,7 @@ coursePurchaseSchema.virtual("isRefundable").get(function () {
 coursePurchaseSchema.methods.processRefund = async function (reason, amount) {
   this.refundReason = reason;
   this.status = "refunded";
-  this.refundedAmount = amount || this.refundedAmount;
+  this.refundAmount = amount || this.amount;
   return this.save();
 };
 
