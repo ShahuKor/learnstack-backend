@@ -8,6 +8,7 @@ import hpp from "hpp";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import healthRoute from "./routes/health.routes.js";
+import { globalErrorHandler } from "./middleware/error.middleware.js";
 
 dotenv.config();
 
@@ -66,18 +67,11 @@ app.use(express.urlencoded({ extended: true, limit: "10kb" })); //url data limit
 app.use(cookieParser());
 app.use(cors());
 
-// Global Error Handler
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.status || 500).json({
-    status: "error",
-    message: err.message || "Internal Server Error",
-    ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
-  });
-});
-
 // API Routes
 app.use("/api/v1/healthcheck", healthRoute);
+
+//global error handler
+app.use(globalErrorHandler);
 
 // 404 handler
 app.use((req, res) => {
