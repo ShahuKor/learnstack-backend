@@ -7,6 +7,7 @@ import mongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import healthRoute from "./routes/health.routes.js";
 
 dotenv.config();
 
@@ -76,6 +77,7 @@ app.use((err, req, res, next) => {
 });
 
 // API Routes
+app.use("/api/v1/healthcheck", healthRoute);
 
 // 404 handler
 app.use((req, res) => {
