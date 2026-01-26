@@ -8,6 +8,7 @@ import hpp from "hpp";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import healthRoute from "./routes/health.routes.js";
+import userRoute from "./routes/user.routes.js";
 import { globalErrorHandler } from "./middleware/error.middleware.js";
 
 dotenv.config();
@@ -69,6 +70,7 @@ app.use(cors());
 
 // API Routes
 app.use("/api/v1/healthcheck", healthRoute);
+app.use("api/v1/user", userRoute);
 
 //global error handler
 app.use(globalErrorHandler);

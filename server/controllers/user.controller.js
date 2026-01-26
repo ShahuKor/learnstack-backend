@@ -1,6 +1,10 @@
 import { User } from "../models/user.model.js";
 import { ApiError } from "../errors/ApiError.js";
 import { generateToken } from "../utils/generateToken.js";
+import {
+  deleteMediafromCloudinary,
+  uploadMediatoCloudinary,
+} from "../utils/cloudinary.js";
 
 export const createUserAccount = async (req, res, next) => {
   try {
@@ -65,6 +69,44 @@ export const getCurrentUserProfile = async (req, res, next) => {
         ...user.toJSON(),
         totalEnrolledCourses: user.totalEnrolledCourses,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUserProfile = async (req, res, next) => {
+  try {
+    const { name, email, bio } = req.body;
+    const updateData = { name, email: email?.toLowerCase(), bio };
+
+    if (req.file) {
+      const fileUploadResponse = await uploadMediatoCloudinary(req.file.path);
+      updateData.avatar = fileUploadResponse.secure_url;
+
+      //delete previous avatar
+      const user = await User.findById(req.user.id);
+      if (user.avatar && user.avatar !== "defaultavatar.png") {
+        await deleteMediafromCloudinary(user.avatar);
+      }
+    }
+    const finalUpdatedResult = await User.findByIdAndUpdate(
+      req.user.id,
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      },
+    ).select("-password");
+
+    if (!finalUpdatedResult) {
+      throw new ApiError("couldnt update the user profile", 400);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      data: finalUpdatedResult.toJSON(),
     });
   } catch (error) {
     next(error);
