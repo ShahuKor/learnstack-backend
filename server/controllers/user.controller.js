@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../errors/ApiError.js";
 import { generateToken } from "../utils/generateToken.js";
 
-export const createUserAccount = async (req, res) => {
+export const createUserAccount = async (req, res, next) => {
   try {
     const { name, email, password, role = "student" } = req.body;
     const exitingUser = await User.findOne({ email: email });
@@ -22,7 +22,7 @@ export const createUserAccount = async (req, res) => {
   }
 };
 
-export const authenticateUser = async (req, res) => {
+export const authenticateUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -38,11 +38,33 @@ export const authenticateUser = async (req, res) => {
   }
 };
 
-export const logoutUser = async (req, res) => {
+export const logoutUser = async (req, res, next) => {
   try {
     res.cookie("token", " ", { maxAge: 0 });
     res.status(200).json({
       message: "User logged out successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCurrentUserProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password").populate({
+      path: "enrolledCourses.course",
+      select: "title description thumbnail",
+    });
+    if (!user) {
+      throw new ApiError("User not found", 404);
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        ...user.toJSON(),
+        totalEnrolledCourses: user.totalEnrolledCourses,
+      },
     });
   } catch (error) {
     next(error);
