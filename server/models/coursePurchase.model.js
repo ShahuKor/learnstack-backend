@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const coursePurchaseSchema = new mongoose.Schema(
   {
-    course: {
+    courseId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
       required: [true, "Course reference is required field"],
     },
-    user: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: [true, "User reference is required field"],
